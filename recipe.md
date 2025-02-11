@@ -110,6 +110,12 @@ class FriendsDetails:
         # Side-effects
         #   None
         pass # No code here yet
+
+        # will need to import datetime from datetime and timedelta
+        # try:
+        #     return datetime.strptime(dob, '%Y-%m-%d')
+        # except ValueError:
+        #     raise ValueError("Date must be in format 'YYYY-MM-DD'")
 ```
 
 ## 3. Create Examples as Tests
@@ -215,9 +221,86 @@ friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as
 friends_details.add_friend("friend two", "2010-03-01") # need to use datetime as input for dob
 assert friends_details.upcoming_birthdays_ages() == {"friend two": 15}
 
+"""
+Friend with birthday on current date should be included in upcoming birthdays
+"""
+
+
+
+## errors and edgecases.... 
+
+
+
+"""
+Test empty string as name raises Error
+"""
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.add_friend("", "2000-01-01")
+err_msg =str(err.value)
+assert err_msg == '"Name cannot be empty"'
+
+
+"""
+Test whitespace-only string as name raises Error
+"""
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.add_friend(" ", "2000-01-01")
+err_msg =str(err.value)
+assert err_msg == '"Name cannot be empty"'
+
+"""
+Adding friend with invalid date format raises Error
+"""
+
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.add_friend("friend one", "01/01/2000")
+err_msg = str(err.value)
+assert err_msg == "Date must be in format 'YYYY-MM-DD'"
+
+"""
+Adding friend with invalid date (e.g., February 01 2000) raises Error
+"""
+
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.add_friend("friend one", "February 01 2000")
+err_msg = str(err.value)
+assert err_msg == "Date must be in format 'YYYY-MM-DD'"
+
+"""
+Adding friend with duplicate (name and dob) raises Error (duplicate)
+"""
+
+friends_details = FriendsDetails()
+friends_details.add_friend("friend one", "2000-01-01")
+with pytest.raises(Exception) as err:
+    friends_details.add_friend("friend one", "2000-01-01")
+err_msg = str(value.err) 
+assert err_msg == 'friend one already exists'
+
+"""
+Trying to Update name on non existent friend raises Error
+"""
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.update_friend_name("non-existent", "new name")
+err_msg = str(value.err)
+assert err_msg == 'non-existent not found'
+
+"""
+Trying to Update dob on non existent friend raises Error
+"""
+
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.update_friend_dates("non-existent", "2000-01-01")
+err_msg = str(value.err)
+assert err_msg == 'non-existent not found'
+
 ```
-
-
 
 
 _Encode each example as a test. You can add to the above list as you go._
