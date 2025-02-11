@@ -96,7 +96,8 @@ class FriendsDetails:
         # Parameters:
         #   upcoming_birthdays_list a list of name and dob of upcoming birthdays
         # Returns:
-        #   a list containing tuple of names and ages
+        #   a dictionary of names and ages. Age is the age at the next bday
+        #   or returns a list of strings, ["friend x will be x years old (on x date?)"]
         # Side-effects
         #   None
         pass # No code here yet
@@ -129,9 +130,90 @@ assert isinstance(friends_details, FriendsDetails)
 initialise an empty dict, all_friends returns empty dictionary
 """
 friends_details=FriendsDetails()
-# assert friends_details.all_friends() == {}
 assert friends_details.all_friends() == {}
 
+
+"""
+initialise a friend_details class, check convert_dob_to_datime methods, converts string to datetime
+"""
+friends_details=FriendsDetails()
+result = friends_details._covert_dob_to_datetime_('2000-01-01')
+assert isistance(result, datetime) #???
+
+
+"""
+initialise a new class, add friend, all_friends returns whats been added
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-01-01")
+assert friends_details.all_friends() == {"friend one": "2000-01-01"}
+
+"""
+initialise a new class, add two friend, all_friends returns whats been added
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-01-01")
+friends_details.add_friend("friend two", "2001-12-25")
+assert friends_details.all_friends() == {"friend one": "2000-01-01", "friend two": "2001-12-25"}
+
+
+"""
+initialise a new class, add friend, ,update friend dob, all_friends returns whats been updated
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-01-01")
+friends_details.update_friend_dates("friend one", "1999-02-03")
+assert friends_details.all_friends() == {"friend one":"1999-02-03"}
+
+"""
+initialise a new class, add friend, ,update friend name, all_friends returns whats been updated
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-01-01")
+friends_details.update_friend_name("friend one", "friend two")
+assert friends_details.all_friends() == {"friend two":"2000-01-01"}
+
+
+"""
+initialise a new class, add 2 friend, upcoming bdays reutnrs only the friend whos bday in within next month
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-03-01") # need to use datetime as input for dob
+friends_details.add_friend("friend two", "2000-04-01") # need to use datetime as input for dob
+assert friends_details.upcoming_birthdays() == {"friend one", "2000-03-01"}
+
+
+"""
+initialise a new class, add 2 friend, upcoming bdays retunrs no friends as bdays after a month
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as input for dob
+friends_details.add_friend("friend two", "2000-04-01") # need to use datetime as input for dob
+assert friends_details.upcoming_birthdays() == {} # could be string or empyt dictionry?
+
+
+"""
+initialise a new class, add 2 friend, upcoming bday ages returns age of friends with upcoming bdays
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-03-01") # need to use datetime as input for dob
+assert friends_details.upcoming_birthdays_ages() == {"friend one": 25}
+
+"""
+initialise a new class, add 2 friend, upcoming bday ages returns empty dict with no bdays within month
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as input for dob
+friends_details.add_friend("friend two", "2000-04-01") # need to use datetime as input for dob
+assert friends_details.upcoming_birthdays_ages() == {}
+
+"""
+initialise a new class, add 2 friend, upcoming bday ages returns only one friend + age whos bday within the next month
+"""
+friends_details=FriendsDetails()
+friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as input for dob
+friends_details.add_friend("friend two", "2010-03-01") # need to use datetime as input for dob
+assert friends_details.upcoming_birthdays_ages() == {"friend two": 15}
 
 ```
 
