@@ -63,9 +63,19 @@ class FriendsDetails:
         #   list of tupples name and dob for each item
         # Side-effects
         #   None
-        pass # No code here yet
+        
+        #iterate through friend dict, and somehow filter for dobs in the next 30 days, then 
 
-    def upcoming_birthdays_ages(self, upcoming_birthdays_list: list):
+        upcoming_bdays={}        
+        limit = datetime(datetime.today().year, datetime.today().month+1, datetime.today().day)
+        for key, value in self.friends_dict.items():            
+            next_birthday = datetime(limit.year, value.month, value.day)
+            if next_birthday <= limit:
+                upcoming_bdays[key]=value.strftime('%Y-%m-%d')
+        return upcoming_bdays
+
+
+    def upcoming_birthdays_ages(self):
         # Parameters:
         #   upcoming_birthdays_list a list of name and dob of upcoming birthdays
         # Returns:
@@ -73,7 +83,14 @@ class FriendsDetails:
         #   or returns a list of strings, ["friend x will be x years old (on x date?)"]
         # Side-effects
         #   None
-        pass # No code here yet
+        age_dict={}
+        bday_dict=self.upcoming_birthdays()
+        for key, value in bday_dict.items():
+            bday_year=self._covert_dob_to_datetime_(value).year
+            age=datetime.today().year - bday_year
+            age_dict[key]=age
+        return age_dict
+        
 
     def _covert_dob_to_datetime_(self, dob: str):
         # Parameters:

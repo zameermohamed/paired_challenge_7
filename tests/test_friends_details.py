@@ -84,47 +84,75 @@ initialise a new class, add 2 friend, upcoming bdays reutnrs only the friend who
 """
 def test_upcoming_bday():
     friends_details=FriendsDetails()
-    
-    friends_details.add_friend("friend one", "2000-03-01") # need to use datetime as input for dob
-    friends_details.add_friend("friend two", "2000-04-01") # need to use datetime as input for dob
-    assert friends_details.upcoming_birthdays() == {"friend one", "2000-03-01"}
+    date_30_days = datetime(datetime.today().year-20, datetime.today().month+1, datetime.today().day)
+    date_60_days = datetime(datetime.today().year-20, datetime.today().month+1, datetime.today().day+1) 
+    friends_details.add_friend("friend one", date_30_days.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    friends_details.add_friend("friend two", date_60_days.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    assert friends_details.upcoming_birthdays() == {"friend one": date_30_days.strftime('%Y-%m-%d')}
 
 
-# """
-# initialise a new class, add 2 friend, upcoming bdays retunrs no friends as bdays after a month
-# """
-# friends_details=FriendsDetails()
-# friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as input for dob
-# friends_details.add_friend("friend two", "2000-04-01") # need to use datetime as input for dob
-# assert friends_details.upcoming_birthdays() == {} # could be string or empyt dictionry?
+"""
+initialise a new class, add 2 friend, upcoming bdays retunrs no friends as bdays after a month
+"""
+def test_upcoming_bday_after_2_months():
+    friends_details=FriendsDetails()
+    date_2_months = datetime(datetime.today().year-20, datetime.today().month+2, datetime.today().day)
+    date_3_months = datetime(datetime.today().year-20, datetime.today().month+3, datetime.today().day+1) 
+    friends_details.add_friend("friend one", date_2_months.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    friends_details.add_friend("friend two", date_3_months.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    assert friends_details.upcoming_birthdays() == {}
 
 
-# """
-# initialise a new class, add 2 friend, upcoming bday ages returns age of friends with upcoming bdays
-# """
-# friends_details=FriendsDetails()
-# friends_details.add_friend("friend one", "2000-03-01") # need to use datetime as input for dob
-# assert friends_details.upcoming_birthdays_ages() == {"friend one": 25}
+"""
+initialise a new class, add 2 friend, upcoming bday ages returns age of friends with upcoming bdays
 
-# """
-# initialise a new class, add 2 friend, upcoming bday ages returns empty dict with no bdays within month
-# """
-# friends_details=FriendsDetails()
-# friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as input for dob
-# friends_details.add_friend("friend two", "2000-04-01") # need to use datetime as input for dob
-# assert friends_details.upcoming_birthdays_ages() == {}
+"""
+def test_upcoming_bday_ages():
+    friends_details=FriendsDetails()
+    age_20 = datetime(datetime.today().year-20, datetime.today().month+1, datetime.today().day) #age 20
+    age_30 = datetime(datetime.today().year-30, datetime.today().month, datetime.today().day+10) #age 30
+    friends_details.add_friend("friend one", age_20.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    friends_details.add_friend("friend two", age_30.strftime('%Y-%m-%d')) # need to use datetime as input for dob    
+    assert friends_details.upcoming_birthdays_ages() == {"friend one": 20, "friend two": 30}
 
-# """
-# initialise a new class, add 2 friend, upcoming bday ages returns only one friend + age whos bday within the next month
-# """
-# friends_details=FriendsDetails()
-# friends_details.add_friend("friend one", "2000-05-01") # need to use datetime as input for dob
-# friends_details.add_friend("friend two", "2010-03-01") # need to use datetime as input for dob
-# assert friends_details.upcoming_birthdays_ages() == {"friend two": 15}
+"""
+initialise a new class, add 2 friend, upcoming bday ages returns empty dict with no bdays within month
+"""
+def test_upcoming_bday_ages_invalid():
+    friends_details=FriendsDetails()
+    age_20 = datetime(datetime.today().year-20, datetime.today().month+2, datetime.today().day) #age 20
+    age_30 = datetime(datetime.today().year-30, datetime.today().month+3, datetime.today().day+10) #age 30
+    friends_details.add_friend("friend one", age_20.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    friends_details.add_friend("friend two", age_30.strftime('%Y-%m-%d')) # need to use datetime as input for dob    
+    assert friends_details.upcoming_birthdays_ages() == {}
 
-# """
-# Friend with birthday on current date should be included in upcoming birthdays
-# """
+"""
+initialise a new class, add 2 friend, upcoming bday ages returns only one friend + age whos bday within the next month
+"""
+def test_upcoming_bday_ages_one_valid_one_invalid():
+    friends_details=FriendsDetails()
+    age_20 = datetime(datetime.today().year-20, datetime.today().month+2, datetime.today().day) #age 20
+    age_30 = datetime(datetime.today().year-30, datetime.today().month, datetime.today().day+10) #age 30
+    friends_details.add_friend("friend one", age_20.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    friends_details.add_friend("friend two", age_30.strftime('%Y-%m-%d')) # need to use datetime as input for dob    
+    assert friends_details.upcoming_birthdays_ages() == {"friend two": 30}
+
+
+"""
+Friend with birthday on current date should be included in upcoming birthdays
+"""
+
+def test_upcoming_bday_ages_today():
+    friends_details=FriendsDetails()
+    age_20 = datetime(datetime.today().year-25, datetime.today().month, datetime.today().day) #age 25
+    friends_details.add_friend("friend one", age_20.strftime('%Y-%m-%d')) # need to use datetime as input for dob      
+    assert friends_details.upcoming_birthdays_ages() == {"friend one": 25}
+
+def test_upcoming_bday_today():
+    friends_details=FriendsDetails()
+    bday_2day = datetime(datetime.today().year-35, datetime.today().month, datetime.today().day)
+    friends_details.add_friend("friend one", bday_2day.strftime('%Y-%m-%d')) # need to use datetime as input for dob
+    assert friends_details.upcoming_birthdays() == {"friend one" : bday_2day.strftime('%Y-%m-%d')}
 
 
 
