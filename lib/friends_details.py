@@ -25,37 +25,31 @@ class FriendsDetails:
         return new_dict
 
     def add_friend(self, name: str, dob: str):
-        # Parameters:
-        #   name: string
-        #   dob: str
-        # Returns:
-        #   Nothing
-        # Side-effects
-        #   updates the friend dict
-        dob_datetime=self._covert_dob_to_datetime_(dob)
-        self.friends_dict[name] = dob_datetime
+
+
+        if any(char for char in name if char.isalpha()):
+            if self.friends_dict.get(name, False):
+                raise Exception(f"{name} already exists")
+            else:
+                dob_datetime=self._covert_dob_to_datetime_(dob)
+                self.friends_dict[name] = dob_datetime
+        else:
+            raise Exception('Name cannot be empty')
 
     def update_friend_dates(self, name: str, dob:str): 
-        # Parameters:
-        #   name: string
-        #   dob: str
-        # Returns:
-        #   Nothing
-        # Side-effects
-        #   updates the friend dict
-        dob_datetime=self._covert_dob_to_datetime_(dob)
-        self.friends_dict[name]=dob_datetime
+        if self.friends_dict.get(name, False):
+            dob_datetime=self._covert_dob_to_datetime_(dob)
+            self.friends_dict[name]=dob_datetime
+        else:
+            raise Exception(f'{name} not found')
+
 
     def update_friend_name(self, old_name: str, new_name:str): 
-        # Parameters:
-        #   old_name: string
-        #   new_name: str
-        # Returns:
-        #   Nothing
-        # Side-effects
-        #   updates the friend dict
-        self.friends_dict[new_name]=self.friends_dict.pop(old_name)
-
+        if self.friends_dict.get(old_name, False):
+            self.friends_dict[new_name]=self.friends_dict.pop(old_name)
+        else:
+            raise Exception(f"{old_name} doesn't exist")
+    
     def upcoming_birthdays(self):
         # Parameters:
         #   None
@@ -93,13 +87,7 @@ class FriendsDetails:
         
 
     def _covert_dob_to_datetime_(self, dob: str):
-        # Parameters:
-        #   dob in string format ('2012-05-01')
-        # Returns:
-        #   a datetime object
-        # Side-effects
-        #   None
         try:
             return datetime.strptime(dob, '%Y-%m-%d')
-        except ValueError:
-            raise ValueError("Date must be in format 'YYYY-MM-DD'")
+        except:
+            raise Exception("Date must be in format 'YYYY-MM-DD'")

@@ -72,7 +72,7 @@ def test_update_dob():
 """
 initialise a new class, add friend, ,update friend name, all_friends returns whats been updated
 """
-def test_update_friend_name():
+def test_update_friend_name_valid():
     friends_details=FriendsDetails()
     friends_details.add_friend("friend one", "2000-01-01")
     friends_details.update_friend_name("friend one", "friend two")
@@ -163,68 +163,73 @@ def test_upcoming_bday_today():
 """
 Test empty string as name raises Error
 """
-friends_details = FriendsDetails()
-with pytest.raises(Exception) as err:
-    friends_details.add_friend("", "2000-01-01")
-err_msg =str(err.value)
-assert err_msg == '"Name cannot be empty"'
+
+def test_add_empty_str_raises_err():
+    friends_details = FriendsDetails()
+    with pytest.raises(Exception) as err:
+        friends_details.add_friend("", "2000-01-01")
+    err_msg =str(err.value)
+    assert err_msg == "Name cannot be empty"
 
 
-# """
-# Test whitespace-only string as name raises Error
-# """
-# friends_details = FriendsDetails()
-# with pytest.raises(Exception) as err:
-#     friends_details.add_friend(" ", "2000-01-01")
-# err_msg =str(err.value)
-# assert err_msg == '"Name cannot be empty"'
+"""
+Test whitespace-only string as name raises Error
+"""
+def test_add_whitespace_raises_err():
+    friends_details = FriendsDetails()
+    with pytest.raises(Exception) as err:
+        friends_details.add_friend(" ", "2000-01-01")
+    err_msg =str(err.value)
+    assert err_msg == "Name cannot be empty"
 
-# """
-# Adding friend with invalid date format raises Error
-# """
+"""
+Adding friend with invalid date format raises Error
+"""
+def test_add_invalid_date_format():
+    friends_details = FriendsDetails()
+    with pytest.raises(Exception) as err:
+        friends_details.add_friend("friend one", "01/01/2000")
+    err_msg = str(err.value)
+    assert err_msg == "Date must be in format 'YYYY-MM-DD'"
 
-# friends_details = FriendsDetails()
-# with pytest.raises(Exception) as err:
-#     friends_details.add_friend("friend one", "01/01/2000")
-# err_msg = str(err.value)
-# assert err_msg == "Date must be in format 'YYYY-MM-DD'"
+"""
+Adding friend with invalid date (e.g., February 01 2000) raises Error
+"""
+def test_add_invalid_date_format_2():
+    friends_details = FriendsDetails()
+    with pytest.raises(Exception) as err:
+        friends_details.add_friend("friend one", "February 01 2000")
+    err_msg = str(err.value)
+    assert err_msg == "Date must be in format 'YYYY-MM-DD'"
 
-# """
-# Adding friend with invalid date (e.g., February 01 2000) raises Error
-# """
+"""
+Adding friend with duplicate name raises Error (duplicate)
+"""
+def test_add_duplicate_name_invalid():
+    friends_details = FriendsDetails()
+    friends_details.add_friend("friend one", "2000-01-01")
+    with pytest.raises(Exception) as err:
+        friends_details.add_friend("friend one", "2000-01-01")
+    err_msg = str(err.value) 
+    assert err_msg == 'friend one already exists'
 
-# friends_details = FriendsDetails()
-# with pytest.raises(Exception) as err:
-#     friends_details.add_friend("friend one", "February 01 2000")
-# err_msg = str(err.value)
-# assert err_msg == "Date must be in format 'YYYY-MM-DD'"
+"""
+Trying to Update name on non existent friend raises Error
+"""
+def test_update_non_existent_friend_invalid():
+    friends_details = FriendsDetails()
+    with pytest.raises(Exception) as err:
+        friends_details.update_friend_name("non-existent", "new name")
+    err_msg = str(err.value)
+    assert err_msg == "non-existent doesn't exist"
 
-# """
-# Adding friend with duplicate (name and dob) raises Error (duplicate)
-# """
+"""
+Trying to Update dob on non existent friend raises Error
+"""
 
-# friends_details = FriendsDetails()
-# friends_details.add_friend("friend one", "2000-01-01")
-# with pytest.raises(Exception) as err:
-#     friends_details.add_friend("friend one", "2000-01-01")
-# err_msg = str(value.err) 
-# assert err_msg == 'friend one already exists'
-
-# """
-# Trying to Update name on non existent friend raises Error
-# """
-# friends_details = FriendsDetails()
-# with pytest.raises(Exception) as err:
-#     friends_details.update_friend_name("non-existent", "new name")
-# err_msg = str(value.err)
-# assert err_msg == 'non-existent not found'
-
-# """
-# Trying to Update dob on non existent friend raises Error
-# """
-
-# friends_details = FriendsDetails()
-# with pytest.raises(Exception) as err:
-#     friends_details.update_friend_dates("non-existent", "2000-01-01")
-# err_msg = str(value.err)
-# assert err_msg == 'non-existent not found'
+def test_update_dob_on_non_existent_friend_raises_err():
+    friends_details = FriendsDetails()
+    with pytest.raises(Exception) as err:
+        friends_details.update_friend_dates("non-existent", "2000-01-01")
+    err_msg = str(err.value)
+    assert err_msg == 'non-existent not found'
