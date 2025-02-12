@@ -160,14 +160,14 @@ def test_upcoming_bday_today():
 
 
 
-# """
-# Test empty string as name raises Error
-# """
-# friends_details = FriendsDetails()
-# with pytest.raises(Exception) as err:
-#     friends_details.add_friend("", "2000-01-01")
-# err_msg =str(err.value)
-# assert err_msg == '"Name cannot be empty"'
+"""
+Test empty string as name raises Error
+"""
+friends_details = FriendsDetails()
+with pytest.raises(Exception) as err:
+    friends_details.add_friend("", "2000-01-01")
+err_msg =str(err.value)
+assert err_msg == '"Name cannot be empty"'
 
 
 # """
